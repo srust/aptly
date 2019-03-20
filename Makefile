@@ -85,4 +85,7 @@ man:
 version:
 	@echo $(VERSION)
 
+docker:
+	docker build -t blockbridge/aptly:devel .
+
 .PHONY: man version release goxc

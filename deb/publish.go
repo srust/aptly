@@ -490,12 +490,13 @@ func (p *PublishedRepo) Publish(packagePool aptly.PackagePool, publishedStorageP
 	collectionFactory *CollectionFactory, signer pgp.Signer, progress aptly.Progress, forceOverwrite bool) error {
 	publishedStorage := publishedStorageProvider.GetPublishedStorage(p.Storage)
 
-	err := publishedStorage.MkDir(filepath.Join(p.Prefix, "pool"))
+	basePath := filepath.Join(p.Prefix, "dists", p.Distribution)
+	err := publishedStorage.MkDir(basePath)
 	if err != nil {
 		return err
 	}
-	basePath := filepath.Join(p.Prefix, "dists", p.Distribution)
-	err = publishedStorage.MkDir(basePath)
+
+	err = publishedStorage.MkDir(filepath.Join(basePath, "pool"))
 	if err != nil {
 		return err
 	}
@@ -595,7 +596,7 @@ func (p *PublishedRepo) Publish(packagePool aptly.PackagePool, publishedStorageP
 						if err2 != nil {
 							return err2
 						}
-						relPath = filepath.Join("pool", component, poolDir)
+						relPath = filepath.Join("dists", p.Distribution, "pool", component, poolDir)
 					} else {
 						relPath = filepath.Join("dists", p.Distribution, component, fmt.Sprintf("%s-%s", pkg.Name, arch), "current", "images")
 					}
